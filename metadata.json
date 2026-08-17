@@ -1,0 +1,7 @@
+{
+  "name": "Voces Translator",
+  "description": "Google Translate-style translator between English and Dominican with voice recording studio and authentic phonetics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
