@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+  <meta name="theme-color" content="#0a0a0c">
+  <meta name="description" content="Loop — a video social platform built around discovery that is actually fair.">
+  <title>Loop</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔁</text></svg>">
+</head>
+<body>
+  <!-- Screen-reader landmark and skip link (spec §45) -->
+  <a href="#main" class="sr-only">Skip to content</a>
+
+  <div id="app">
+    <main id="main" class="screen" role="main" aria-live="polite">
+      <div class="empty-state">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Loading…</p>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" id="nav" role="navigation" aria-label="Main"></nav>
+  </div>
+
+  <div id="sheet-root"></div>
+  <div class="toast-wrap" id="toasts" role="status" aria-live="polite"></div>
+
+  <!-- Plain ES modules. No build step, no bundler, no framework — the whole
+       frontend is readable as-is, which matters more here than shaving bytes. -->
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

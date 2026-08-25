@@ -1,18 +1,44 @@
+# ---------------------------------------------------------------------------
+# Secrets — never commit these.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------------------------
+# Node
+# ---------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Runtime data — the database and uploaded media are per-environment.
+# Regenerate locally with `npm run seed`.
+# ---------------------------------------------------------------------------
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+
+# ---------------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------------
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ---------------------------------------------------------------------------
+# Android template (superseded — see README)
+# ---------------------------------------------------------------------------
 *.iml
 .gradle
 .kotlin
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
 /build
 /captures
 .externalNativeBuild
 .cxx
-local.properties
-.env
 debug.keystore

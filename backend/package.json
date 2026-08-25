@@ -1,0 +1,18 @@
+{
+  "name": "video-social-platform-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Modular, API-first backend for a video social platform. Phase 1 foundation.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test tests/",
+    "seed": "node scripts/seed.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "dependencies": {},
+  "comment": "Zero runtime dependencies by design. Uses only Node built-ins: node:http, node:sqlite, node:crypto. This keeps the foundation easy to run (just `node server.js`) and easy to understand. Add libraries later as real needs appear."
+}
