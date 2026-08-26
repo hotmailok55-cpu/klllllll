@@ -31,8 +31,14 @@ backend/data/
 *.swp
 
 # ---------------------------------------------------------------------------
-# Android template (superseded — see README)
+# Android
 # ---------------------------------------------------------------------------
+# YOUR SIGNING KEY. Losing it means you can never update the app on Google
+# Play; committing it means anyone can publish as you. Back it up somewhere
+# safe and OFF this repository.
+*.jks
+*.keystore
+keystore.properties
 *.iml
 .gradle
 .kotlin

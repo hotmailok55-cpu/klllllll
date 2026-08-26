@@ -82,7 +82,7 @@ async function main() {
     process.exit(0);
   }
 
-  console.log('\n  Seeding Loop…\n');
+  console.log('\n  Seeding LJBMK Social…\n');
 
   const hasFfmpeg = await checkFfmpeg();
   if (!hasFfmpeg) {

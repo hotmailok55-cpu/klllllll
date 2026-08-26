@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HTTPS is required everywhere by default.
+
+  The one exception is cleartext to the local development machine, so you can
+  run the backend on your laptop and test on the emulator without setting up
+  TLS. Remove this whole <domain-config> block before you ship to Play.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>   <!-- emulator -> host -->
+        <domain includeSubdomains="false">localhost</domain>
+        <!-- Testing on a REAL phone? Add your computer's LAN IP here, e.g.
+             <domain includeSubdomains="false">192.168.1.20</domain>
+             Android matches exact hosts, not IP ranges, so it must be the
+             actual address. -->
+    </domain-config>
+</network-security-config>

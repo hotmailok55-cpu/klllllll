@@ -42,6 +42,7 @@ const session = {
       this.channel = null;
       this.unread = 0;
       renderNav();
+      renderTopBar();
       return;
     }
 
@@ -56,6 +57,7 @@ const session = {
       this.channel = null;
     }
     renderNav();
+    renderTopBar();
   },
 };
 
@@ -151,6 +153,44 @@ const NAV_ITEMS = [
   { href: '#/library', glyph: '☰', label: 'You' },
 ];
 
+/**
+ * THE TOP BAR.
+ *
+ * The logo is always present and always first. Over the feed the bar floats on
+ * the video (so playback stays full-bleed); everywhere else it is a solid bar.
+ */
+function renderTopBar() {
+  const bar = document.getElementById('topbar');
+  const current = location.hash.slice(1) || '/';
+  const onFeed = current === '/' || current === '/long';
+
+  bar.className = `app-topbar ${onFeed ? 'app-topbar--overlay' : ''}`;
+
+  render(bar,
+    el('a', { href: '#/', 'aria-label': 'LJBMK Social — home' },
+      el('img', {
+        class: 'app-topbar__logo',
+        src: '/assets/logo-wordmark.png',
+        alt: 'LJBMK Social',
+      })),
+    el('div', { class: 'app-topbar__spacer' }),
+    el('a', {
+        class: 'app-topbar__action',
+        href: '#/notifications',
+        'aria-label': 'Notifications',
+      },
+      '🔔',
+      session.unread > 0
+        ? el('span', { class: 'app-topbar__badge' }, count(session.unread))
+        : null),
+    el('a', {
+      class: 'app-topbar__action',
+      href: '#/explore',
+      'aria-label': 'Search',
+    }, '⌕'),
+  );
+}
+
 function renderNav() {
   const nav = document.getElementById('nav');
   const current = location.hash.slice(1) || '/';
@@ -196,7 +236,7 @@ async function route() {
     render(container, el('div', { class: 'empty-state' },
       el('div', { class: 'icon' }, '🧭'),
       el('h2', {}, 'Page not found'),
-      el('p', {}, "That link does not lead anywhere on Loop."),
+      el('p', {}, "That link does not lead anywhere on LJBMK Social."),
       el('div', { class: 'actions' },
         el('a', { class: 'btn btn--primary btn--block', href: '#/' }, 'Go to the feed')),
     ));
@@ -219,6 +259,7 @@ async function route() {
   }
 
   renderNav();
+  renderTopBar();
   container.scrollTop = 0;
 }
 
@@ -240,6 +281,7 @@ window.addEventListener('hashchange', route);
         .then((data) => {
           session.unread = data.unreadNotifications || 0;
           renderNav();
+          renderTopBar();
         })
         .catch(() => {});
     }
@@ -247,4 +289,4 @@ window.addEventListener('hashchange', route);
 })();
 
 // Expose for debugging in the console.
-window.loop = { session, api, auth };
+window.ljbmk = { session, api, auth };

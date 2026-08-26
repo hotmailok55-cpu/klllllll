@@ -1,7 +1,14 @@
-# Loop
+<p align="center">
+  <img src="frontend/assets/logo-wordmark.png" alt="LJBMK Social" height="64">
+</p>
+
+# LJBMK Social
 
 A video social platform built around a vertical scrolling feed, reusable
 sounds, and a recommendation algorithm designed to be **fair to new creators**.
+
+Ships as **two clients on one backend**: a web app, and a native
+**Android app** you can build in Android Studio and publish to Google Play.
 
 The point of this codebase is not that it has a lot of features. It is that
 every part has one job, and that bringing a new external API — copyright,
@@ -10,7 +17,7 @@ some environment variables.
 
 ---
 
-## Run it
+## Run it — web
 
 Requires **Node 22.5+**. No database to install, no build step, no dependencies.
 
@@ -38,6 +45,23 @@ Sign in as `maya` to reach `/#/admin`, where the API integration registry lives.
 npm test                      # 91 tests
 node worker.js                # background worker (run separately in production)
 ```
+
+## Run it — Android
+
+Open the **repository root** in Android Studio and press Run. That's it — the
+project is already configured.
+
+```bash
+./gradlew assembleDebug     # -> app/build/outputs/apk/debug/app-debug.apk
+./gradlew bundleRelease     # -> the .aab you upload to Google Play
+```
+
+One thing to set first: `API_BASE_URL` in `app/build.gradle.kts` has to point at
+your backend. The default (`10.0.2.2:4000`) is correct for the emulator talking
+to a backend on your own machine.
+
+**Full walkthrough — signing your key, building the AAB, and the Play Store
+submission steps — is in [docs/ANDROID.md](docs/ANDROID.md).**
 
 `ffmpeg` is optional. Without it, uploads still work and play at their original
 quality; with it, you get generated thumbnails and a multi-quality transcode
@@ -86,6 +110,13 @@ with real retention curves, account deletion by anonymization, and data export.
 ## Layout
 
 ```
+app/                 the Android app (Kotlin + Jetpack Compose)
+  src/main/java/com/ljbmk/social/
+    MainActivity.kt          shell, navigation, bottom bar
+    ui/components/           THE LOGO TOP BAR
+    ui/feed/                 vertical feed + ExoPlayer
+    data/api/                Retrofit client for the backend below
+
 backend/
   server.js  worker.js  scripts/seed.js
   src/
@@ -115,6 +146,7 @@ docs/
 | [ALGORITHM.md](docs/ALGORITHM.md) | how the feed decides, with real numbers |
 | [API.md](docs/API.md) | every endpoint |
 | [DATABASE.md](docs/DATABASE.md) | schema, migrations, view counting, backups |
+| **[ANDROID.md](docs/ANDROID.md)** | **building the APK/AAB and publishing to Google Play** |
 
 ---
 

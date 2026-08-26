@@ -42,7 +42,7 @@ server.listen(config.server.port, config.server.host, () => {
 
   if (!config.isProduction) {
     process.stdout.write(
-      `\n  Loop is running at http://localhost:${config.server.port}\n` +
+      `\n  LJBMK Social is running at http://localhost:${config.server.port}\n` +
       `  API:    http://localhost:${config.server.port}/api/v1/system/state\n` +
       `  Health: http://localhost:${config.server.port}/api/v1/system/health\n\n`
     );

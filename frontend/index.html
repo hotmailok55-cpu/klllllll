@@ -4,22 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
   <meta name="theme-color" content="#0a0a0c">
-  <meta name="description" content="Loop — a video social platform built around discovery that is actually fair.">
-  <title>Loop</title>
+  <meta name="description" content="LJBMK Social — a video social platform built around discovery that is actually fair.">
+  <title>LJBMK Social</title>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔁</text></svg>">
+  <link rel="icon" href="/assets/logo-mark.png">
+  <link rel="apple-touch-icon" href="/assets/logo-mark.png">
 </head>
 <body>
   <!-- Screen-reader landmark and skip link (spec §45) -->
   <a href="#main" class="sr-only">Skip to content</a>
 
   <div id="app">
-    <main id="main" class="screen" role="main" aria-live="polite">
-      <div class="empty-state">
-        <span class="spinner" aria-hidden="true"></span>
-        <p>Loading…</p>
-      </div>
-    </main>
+    <!-- Top bar + screen share a column, so the desktop sidebar can sit
+         beside them without breaking the layout. -->
+    <div class="app-content">
+      <!-- The LJBMK Social bar. The logo is always the first thing on screen. -->
+      <header class="app-topbar" id="topbar" role="banner"></header>
+
+      <main id="main" class="screen" role="main" aria-live="polite">
+        <div class="empty-state">
+          <span class="spinner" aria-hidden="true"></span>
+          <p>Loading…</p>
+        </div>
+      </main>
+    </div>
 
     <nav class="bottom-nav" id="nav" role="navigation" aria-label="Main"></nav>
   </div>

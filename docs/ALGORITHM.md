@@ -1,6 +1,6 @@
 # The algorithm
 
-How Loop decides what to show, and why it decides that way.
+How LJBMK Social decides what to show, and why it decides that way.
 
 Everything here is implemented in
 [`backend/src/services/recommendations.js`](../backend/src/services/recommendations.js)
@@ -27,7 +27,7 @@ differently: an optimizer that only counts attention learns that outrage,
 shock and cliffhangers hold attention, and starts promoting them. Nobody
 designs that outcome — it is what pure engagement optimization *converges* to.
 
-Loop is built to avoid both.
+LJBMK Social is built to avoid both.
 
 ---
 
@@ -130,7 +130,7 @@ forever — which quietly recreates winner-take-all.
 - at most **4 per category** per page
 - at least **30% of every page** must come from the exploration pool
 
-If the pool is too thin to fill a page within the caps, Loop returns a **short
+If the pool is too thin to fill a page within the caps, LJBMK Social returns a **short
 feed rather than backfilling past them**. On a young platform the candidate pool
 is often dominated by one prolific account, and filling the page from it would
 hand that account the entire feed — exactly what the caps exist to prevent.

@@ -74,7 +74,7 @@ export function signInView(container, { session }) {
       // A brand-new account goes straight to interest selection, so their very
       // first feed is already personalized rather than random.
       location.hash = mode === 'signup' ? '#/welcome' : '#/';
-      toast(mode === 'signup' ? 'Welcome to Loop' : 'Signed in', 'success');
+      toast(mode === 'signup' ? 'Welcome to LJBMK Social' : 'Signed in', 'success');
     } catch (error) {
       // Field-level errors from the API render next to the message.
       const detail = error.details
@@ -95,8 +95,12 @@ export function signInView(container, { session }) {
   render(container,
     el('div', { class: 'container', style: { paddingTop: '40px', maxWidth: '400px' } },
       el('div', { style: { textAlign: 'center', marginBottom: '26px' } },
-        el('div', { style: { fontSize: '42px' } }, '🔁'),
-        el('h1', { style: { margin: '8px 0 4px' } }, 'Loop'),
+        // The real logo, not a placeholder emoji.
+        el('img', {
+          src: '/assets/logo-wordmark.png',
+          alt: 'LJBMK Social',
+          style: { height: '44px', width: 'auto', marginBottom: '10px' },
+        }),
         el('p', { style: { color: 'var(--text-muted)', margin: 0, fontSize: '14.5px' } },
           'Where a first video can find its audience.'),
       ),

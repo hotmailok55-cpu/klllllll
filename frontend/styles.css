@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Loop — design system
+   LJBMK Social — design system
    Mobile-first, dark by default (a full-bleed video feed reads best on dark),
    with a light theme for anyone whose system asks for it.
    ========================================================================== */
@@ -36,6 +36,7 @@
   --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
   --nav-height: 58px;
+  --topbar-height: 52px;
   --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -119,6 +120,80 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   flex-direction: column;
   position: relative;
+}
+
+/* ==========================================================================
+   THE LJBMK SOCIAL TOP BAR
+   The logo is always the first thing on screen, like YouTube's.
+   ========================================================================== */
+
+/* The column holding the top bar and the current screen. */
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--topbar-height);
+  padding: 0 6px 0 14px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top);
+}
+
+/*
+  Over the feed the bar floats on the video so playback stays full-bleed.
+  A top-down scrim keeps the logo readable over bright footage.
+*/
+.app-topbar--overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  border-bottom: none;
+}
+
+.app-topbar__logo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+.app-topbar__spacer { flex: 1; }
+
+.app-topbar__action {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 19px;
+  color: #fff;
+  position: relative;
+  transition: background 0.15s var(--ease);
+}
+.app-topbar__action:hover { background: rgba(255,255,255,0.12); }
+
+.app-topbar__badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
 }
 
 .screen {
@@ -890,6 +965,12 @@ a { color: inherit; text-decoration: none; }
   .nav-badge { position: static; transform: none; margin-left: auto; }
 
   .screen { padding-bottom: 0; }
+
+  .app-content { height: 100dvh; }
+
+  /* More room on desktop, so the wordmark can breathe. */
+  .app-topbar { height: 60px; padding-left: 20px; }
+  .app-topbar__logo { height: 32px; }
 
   /* Centre the vertical feed on wide screens rather than stretching it.
      The overlay uses the SAME width as the video so the action rail sits on

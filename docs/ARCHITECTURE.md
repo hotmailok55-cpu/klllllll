@@ -1,6 +1,6 @@
 # Architecture
 
-How Loop is put together, and why.
+How LJBMK Social is put together, and why.
 
 ---
 
