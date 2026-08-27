@@ -1,3 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Voces</string>
+    <string name="app_name">LJBMK Social</string>
+    <string name="logo_content_description">LJBMK Social</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_explore">Explore</string>
+    <string name="nav_create">Create</string>
+    <string name="nav_inbox">Inbox</string>
+    <string name="nav_you">You</string>
+
+    <!-- Empty states. The backend supplies its own copy where it can;
+         these are the fallbacks used when the device is offline. -->
+    <string name="empty_feed_title">No videos yet.</string>
+    <string name="empty_feed_body">Be one of the first creators to share something.</string>
+    <string name="empty_feed_action">Post your first video</string>
+    <string name="offline_title">You\'re offline</string>
+    <string name="offline_body">Check your connection and try again.</string>
+    <string name="retry">Try again</string>
 </resources>

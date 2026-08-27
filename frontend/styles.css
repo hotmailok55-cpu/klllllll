@@ -1,0 +1,998 @@
+/* ==========================================================================
+   LJBMK Social — design system
+   Mobile-first, dark by default (a full-bleed video feed reads best on dark),
+   with a light theme for anyone whose system asks for it.
+   ========================================================================== */
+
+:root {
+  color-scheme: dark;
+
+  --bg:            #0a0a0c;
+  --bg-elevated:   #141419;
+  --bg-overlay:    rgba(10, 10, 12, 0.72);
+  --surface:       #1c1c22;
+  --surface-hover: #26262e;
+  --border:        rgba(255, 255, 255, 0.10);
+
+  --text:          #f5f5f7;
+  --text-muted:    #a1a1aa;
+  --text-faint:    #6b6b76;
+
+  /* One accent, used sparingly so it always means "primary action". */
+  --accent:        #ff2d6f;
+  --accent-hover:  #ff4d84;
+  --accent-soft:   rgba(255, 45, 111, 0.14);
+
+  --success:       #22c55e;
+  --warning:       #f59e0b;
+  --danger:        #ef4444;
+  --info:          #38bdf8;
+
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  --nav-height: 58px;
+  --topbar-height: 52px;
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --bg:            #ffffff;
+    --bg-elevated:   #f7f7f9;
+    --bg-overlay:    rgba(255, 255, 255, 0.82);
+    --surface:       #f1f1f4;
+    --surface-hover: #e6e6ec;
+    --border:        rgba(0, 0, 0, 0.10);
+    --text:          #101014;
+    --text-muted:    #55555f;
+    --text-faint:    #8a8a95;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+body { overflow: hidden; }        /* the feed owns scrolling, not the page */
+
+button, input, textarea, select { font: inherit; color: inherit; }
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Visible focus for every interactive element — keyboard users must always be
+   able to see where they are. (spec §45) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Screen-reader-only text: present for assistive tech, invisible on screen. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+
+#app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ==========================================================================
+   THE LJBMK SOCIAL TOP BAR
+   The logo is always the first thing on screen, like YouTube's.
+   ========================================================================== */
+
+/* The column holding the top bar and the current screen. */
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--topbar-height);
+  padding: 0 6px 0 14px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top);
+}
+
+/*
+  Over the feed the bar floats on the video so playback stays full-bleed.
+  A top-down scrim keeps the logo readable over bright footage.
+*/
+.app-topbar--overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+  border-bottom: none;
+}
+
+.app-topbar__logo {
+  height: 26px;
+  width: auto;
+  display: block;
+}
+
+.app-topbar__spacer { flex: 1; }
+
+.app-topbar__action {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 19px;
+  color: #fff;
+  position: relative;
+  transition: background 0.15s var(--ease);
+}
+.app-topbar__action:hover { background: rgba(255,255,255,0.12); }
+
+.app-topbar__badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+.screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: var(--nav-height);
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen--feed {
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   THE FEED — the core surface.
+   Scroll snapping gives the one-video-per-swipe feel without any JS.
+   ========================================================================== */
+
+.feed {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+}
+.feed::-webkit-scrollbar { display: none; }
+
+.feed-item {
+  height: calc(100dvh - var(--nav-height));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;   /* never skip past a video in one fling */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+}
+
+.feed-item video,
+.feed-item .video-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-faint);
+  background: linear-gradient(150deg, #16161c, #0a0a0c);
+}
+.video-placeholder .ph-icon { font-size: 40px; opacity: 0.5; }
+
+/* Tap-to-pause indicator */
+.play-indicator {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+.play-indicator.visible { opacity: 1; }
+.play-indicator span {
+  width: 74px; height: 74px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  backdrop-filter: blur(8px);
+}
+
+/* Progress bar pinned to the bottom of each video */
+.feed-progress {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.16);
+  z-index: 4;
+}
+.feed-progress > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.15s linear;
+}
+
+/* --- Overlay: creator info bottom-left, actions bottom-right --- */
+
+.feed-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;   /* clicks fall through to the video */
+  display: flex;
+  align-items: flex-end;
+  z-index: 3;
+}
+.feed-overlay > * { pointer-events: auto; }
+
+.feed-info {
+  flex: 1;
+  padding: 18px 14px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  /* A gradient scrim keeps white text readable over any footage. */
+  background: linear-gradient(to top, rgba(0,0,0,0.82) 12%, rgba(0,0,0,0.35) 55%, transparent);
+  max-width: calc(100% - 78px);
+
+  /* The overlay always sits on top of video, so it is white in BOTH themes.
+     Inheriting the theme's text colour would make it unreadable in light mode. */
+  color: #fff;
+}
+.feed-info a { color: #fff; }
+
+.feed-handle {
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+.feed-handle .verified { color: var(--info); font-size: 13px; }
+
+.feed-title {
+  font-size: 14.5px;
+  line-height: 1.45;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.feed-title.expanded { -webkit-line-clamp: unset; }
+
+/* The sound chip — tapping it opens that sound's own page. */
+.feed-sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  padding: 6px 13px 6px 9px;
+  border-radius: var(--radius-full);
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;   /* over video in both themes */
+}
+/* The same chip used OUTSIDE the video overlay (watch page) follows the theme. */
+.feed-sound--inline {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+  backdrop-filter: none;
+}
+
+.feed-sound .note {
+  animation: spin 4s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.feed-sound span.label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right-hand action rail */
+.feed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 0 10px 30px 0;
+  width: 74px;
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  transition: transform 0.15s var(--ease);
+}
+.action-btn:active { transform: scale(0.88); }
+.action-btn .glyph { font-size: 29px; line-height: 1; }
+.action-btn.active .glyph { color: var(--accent); }
+.action-btn.active.saved .glyph { color: var(--warning); }
+
+/* Creator avatar with a follow "+" badge */
+.feed-avatar {
+  position: relative;
+  width: 46px; height: 46px;
+  margin-bottom: 6px;
+}
+.feed-avatar img,
+.feed-avatar .avatar-fallback {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  object-fit: cover;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 17px;
+}
+.feed-avatar .follow-badge {
+  position: absolute;
+  bottom: -7px; left: 50%;
+  transform: translateX(-50%);
+  width: 21px; height: 21px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+.feed-avatar.following .follow-badge {
+  background: var(--success);
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   Bottom navigation
+   ========================================================================== */
+
+.bottom-nav {
+  height: var(--nav-height);
+  display: flex;
+  align-items: stretch;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-faint);
+  transition: color 0.15s var(--ease);
+  position: relative;
+}
+.nav-item .glyph { font-size: 21px; line-height: 1; }
+.nav-item.active { color: var(--text); }
+
+/* The create button is deliberately the visual centre of the app. */
+.nav-item.create .glyph {
+  background: var(--accent);
+  color: #fff;
+  width: 42px; height: 29px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.nav-badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 18px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+/* ==========================================================================
+   Generic UI
+   ========================================================================== */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 { font-size: 17px; margin: 0; font-weight: 700; flex: 1; }
+.topbar.transparent {
+  background: transparent;
+  border-bottom: none;
+  position: absolute;
+  left: 0; right: 0;
+}
+
+.container { padding: 16px 14px; max-width: 720px; margin: 0 auto; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.15s var(--ease), transform 0.1s var(--ease);
+  border: 1px solid var(--border);
+}
+.btn:hover { background: var(--surface-hover); }
+.btn:active { transform: scale(0.97); }
+.btn--primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+.btn--primary:hover { background: var(--accent-hover); }
+.btn--block { width: 100%; }
+.btn--sm { padding: 8px 15px; font-size: 13.5px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: 13px 15px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;   /* 16px stops iOS zooming on focus */
+  transition: border-color 0.15s var(--ease);
+}
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+.textarea { resize: vertical; min-height: 92px; font-family: inherit; }
+
+.field { margin-bottom: 15px; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.field .hint { font-size: 12px; color: var(--text-faint); margin-top: 5px; }
+.field .error { font-size: 12.5px; color: var(--danger); margin-top: 5px; }
+
+/* ==========================================================================
+   Empty states — designed, never accidental. (spec §9)
+   ========================================================================== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 56px 28px;
+  gap: 11px;
+  min-height: 60vh;
+}
+.empty-state .icon {
+  font-size: 46px;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+.empty-state h2 { margin: 0; font-size: 20px; font-weight: 700; }
+.empty-state p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 14.5px;
+  line-height: 1.55;
+  max-width: 320px;
+}
+.empty-state .actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+  width: 100%;
+  max-width: 280px;
+}
+
+/* The feed's empty state sits over the black video area. */
+.feed .empty-state { height: calc(100dvh - var(--nav-height)); min-height: 0; }
+
+/* ==========================================================================
+   Cards, grids, lists
+   ========================================================================== */
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 3px;
+}
+
+.grid-item {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  background: var(--surface);
+  overflow: hidden;
+  border-radius: 3px;
+}
+.grid-item img { width: 100%; height: 100%; object-fit: cover; }
+.grid-item .grid-fallback {
+  width: 100%; height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  background: linear-gradient(150deg, #22222a, #131318);
+}
+.grid-item .grid-meta {
+  position: absolute;
+  bottom: 5px; left: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  /* Always white: this sits on a thumbnail, not on the page background. */
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.grid-item .grid-status {
+  position: absolute;
+  top: 5px; left: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.list-row:last-child { border-bottom: none; }
+.list-row .row-main { flex: 1; min-width: 0; }
+.list-row .row-title {
+  font-weight: 600;
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.list-row .row-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.avatar--lg { width: 78px; height: 78px; font-size: 28px; }
+.avatar--sm { width: 32px; height: 32px; font-size: 13px; }
+
+/* ==========================================================================
+   Sheets (bottom modals) — comments, sound picker, share
+   ========================================================================== */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  animation: fade 0.2s var(--ease);
+}
+@keyframes fade { from { opacity: 0; } }
+
+.sheet {
+  background: var(--bg-elevated);
+  width: 100%;
+  max-height: 78dvh;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.26s var(--ease);
+  overflow: hidden;
+}
+@keyframes slideUp { from { transform: translateY(100%); } }
+
+.sheet-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.sheet-header h3 { margin: 0; font-size: 15.5px; flex: 1; font-weight: 700; }
+.sheet-body { overflow-y: auto; padding: 14px 16px; flex: 1; }
+.sheet-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 9px;
+  flex-shrink: 0;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.grabber {
+  width: 38px; height: 4px;
+  background: var(--text-faint);
+  border-radius: 2px;
+  margin: 8px auto 0;
+  flex-shrink: 0;
+}
+
+/* Comments */
+.comment {
+  display: flex;
+  gap: 10px;
+  padding: 11px 0;
+}
+.comment-body { flex: 1; min-width: 0; }
+.comment-author {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.comment-text { font-size: 14.5px; line-height: 1.45; word-wrap: break-word; }
+.comment-meta {
+  display: flex;
+  gap: 15px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-faint);
+  font-weight: 600;
+}
+.comment-replies { margin-left: 42px; }
+
+/* ==========================================================================
+   Status, badges, chips
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 700;
+  background: var(--surface);
+  text-transform: capitalize;
+}
+.badge--success { background: rgba(34, 197, 94, 0.16); color: var(--success); }
+.badge--warning { background: rgba(245, 158, 11, 0.16); color: var(--warning); }
+.badge--danger  { background: rgba(239, 68, 68, 0.16);  color: var(--danger); }
+.badge--info    { background: rgba(56, 189, 248, 0.16); color: var(--info); }
+.badge--muted   { background: var(--surface); color: var(--text-muted); }
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 9px 16px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1.5px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+  transition: all 0.15s var(--ease);
+}
+.chip.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Progress bar */
+.progress {
+  height: 6px;
+  background: var(--surface);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress > i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-full);
+  transition: width 0.4s var(--ease);
+}
+
+.spinner {
+  width: 19px; height: 19px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: rotate 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast-wrap {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  width: max-content;
+  max-width: 90vw;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 11px 18px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.24s var(--ease);
+}
+.toast--error { background: var(--danger); color: #fff; border-color: transparent; }
+.toast--success { background: var(--success); color: #05210f; border-color: transparent; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px); } }
+
+/* ==========================================================================
+   Stats / analytics
+   ========================================================================== */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 15px;
+}
+.stat .stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.stat .stat-value { font-size: 25px; font-weight: 700; letter-spacing: -0.5px; }
+.stat .stat-sub { font-size: 11.5px; color: var(--text-faint); margin-top: 3px; }
+
+/* Retention / trend chart, drawn with plain divs — no chart library. */
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 96px;
+  padding: 10px 0;
+}
+.chart-bar {
+  flex: 1;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+  opacity: 0.85;
+  transition: opacity 0.15s var(--ease);
+}
+.chart-bar:hover { opacity: 1; }
+
+/* ==========================================================================
+   Desktop
+   ========================================================================== */
+
+@media (min-width: 900px) {
+  /* Row layout with the nav ordered first puts the sidebar on the left,
+     where a navigation rail belongs on desktop. */
+  #app { flex-direction: row; }
+
+  .bottom-nav {
+    height: 100dvh;
+    width: 228px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 20px 12px;
+    gap: 4px;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    order: -1;
+  }
+
+  .nav-item {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    font-size: 15px;
+  }
+  .nav-item:hover { background: var(--surface); }
+  .nav-item.active { background: var(--surface); }
+  .nav-item .glyph { font-size: 22px; }
+  .nav-item.create .glyph { width: 34px; height: 26px; font-size: 17px; }
+  .nav-badge { position: static; transform: none; margin-left: auto; }
+
+  .screen { padding-bottom: 0; }
+
+  .app-content { height: 100dvh; }
+
+  /* More room on desktop, so the wordmark can breathe. */
+  .app-topbar { height: 60px; padding-left: 20px; }
+  .app-topbar__logo { height: 32px; }
+
+  /* Centre the vertical feed on wide screens rather than stretching it.
+     The overlay uses the SAME width as the video so the action rail sits on
+     the video rather than floating beside it. */
+  .feed-item { height: 100dvh; }
+  .feed-item video, .feed-item .video-placeholder {
+    max-width: min(480px, calc(100dvh * 0.5625));
+    border-radius: var(--radius);
+  }
+  .feed-overlay {
+    max-width: min(480px, calc(100dvh * 0.5625));
+    margin: 0 auto;
+  }
+  .feed .empty-state { height: 100dvh; }
+
+  .sheet-backdrop { align-items: center; justify-content: center; }
+  .sheet {
+    max-width: 520px;
+    border-radius: var(--radius-lg);
+    max-height: 76dvh;
+  }
+  .toast-wrap { bottom: 24px; }
+  .video-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .grid-item { border-radius: var(--radius-sm); }
+}
